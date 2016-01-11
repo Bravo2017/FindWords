@@ -1,0 +1,138 @@
+package FindWordsPackage;
+import java.util.ArrayList;
+
+
+/**
+ * @author Jefferson Vivanco NetID: JV1019 Date: 10-10-2015 
+ * Class: This class defines a LetterBag object. It implements the LetterBag interface. A LetterBag object contains the sequence
+ * 	      of letters the user entered and from this sequence it uses the getAllWords method to generate variations of the 
+ * 		  sequence. It utilizes methods from the Dictionary object in the getAllWords method. 
+ * Global Variables: userLetters is the variable that holds the user's sequence 
+ * 					finalAllWords is the ArrayList that holds all the sequences that exist in the dictionary 
+ * 					dic2 is the Dictionary that we used to store the Dictionary passed to the getAllWords method
+ */
+public class LetterBag implements LetterBagInterface {
+
+	
+	private String userLetters; 
+	private ArrayList<String> finalAllWords = new ArrayList<>();
+	private Dictionary dic2; 
+	
+	
+
+	/**
+	 * Constructor of the LetterBag object
+	 * @param userLetters is the sequence of letters the user enters
+	 */
+	public LetterBag(String userLetters)
+	{
+		this.userLetters = userLetters; 
+		
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() 
+	{
+		return this.userLetters;
+	}
+	/* (non-Javadoc)
+	 * @see FindWordsPackage.LetterBagInterface#getAllWords(FindWordsPackage.Dictionary)
+	 */
+	public ArrayList<String> getAllWords(Dictionary dictionary)													
+	{
+		String user2 = this.userLetters;//This string is equal to the sequence the user entered 
+		dic2 = dictionary; //We make a global variable equal to the dictionary passed to the getAllWords method
+						  //This enables us to use the methods in dictionary
+		return getAllWords("",user2);//Calling the private method of getAllWords
+		
+	}
+	
+	/**
+	 * Method: This method overrides the original getAllWords method. Here, is where all possible variations of the 
+	 * 		   the sequence the user entered are made. This method uses recursion to find all the possible sequences. The 
+	 * 		   backtracking technique is implemented in the following way: When the method starts to recursively make sequences,
+	 * 		   the findPrefix method will check to see if that variation exists in the dictionary, if it does it continues
+	 * 		   to formulate the variations, if it doesn't it stops there, it does not call the recursive call, it moves on to
+	 * 		   another sequence. 
+	 * @param prefix is the prefix that we will comparing using the findPrefix method 
+	 * @param userLetters are the letters that the user entered 
+	 * @return an ArrayList of all the possible variations of the sequence the user entered that exist in the dictionary 
+	 */
+	private ArrayList<String> getAllWords(String prefix, String userLetters)
+	{
+		
+	    int length = userLetters.length();
+	    if (length == 0 && dic2.findWord(prefix) && !existsPrefix(finalAllWords,prefix))//Base case and it also checks if 
+	    															//the word is in the dictionary and if the word doesn't
+	    															//already exist in the getAllWords ArrayList
+	    	finalAllWords.add(prefix);//If it passes the base case and the checks then it gets added to the ArrayList 
+	    else {
+	        for (int i = 0; i < length; i++)
+	        {
+	        	if(dic2.findPrefix(prefix))//Checks if the prefix(variation) exists in the dictionary, if not, it does not 
+	        							//make the recursive call and it moves on 
+	        		getAllWords(prefix + userLetters.charAt(i), userLetters.substring(0, i) + userLetters.substring(i+1, length));//Recursive call
+	        }
+	    }
+	    sortAr(finalAllWords);//Calling the sort method to sort the arrayList of all the variations found in the dictionary
+	    return finalAllWords; 
+	}
+	/**
+	 * @param list is the ArrayList that contains the sequences found in the dictionary. This arrayList will be checked if
+	 * 		  if it has any doubles of a sequence 
+	 * @param word is the word that we are checking if it is already in the arrayList(list) 
+	 * @return either true if the element is already in the arrayList or false if it is not 
+	 */
+	public boolean existsPrefix(ArrayList<String> list, String word)
+	{
+		for(int i=0; i<list.size();i++)
+		{
+			if(list.get(i).equalsIgnoreCase(word))
+				return true;
+		}
+		return false; 
+	}
+	/**
+	 * Method: This method sorts an arrayList using selection sort
+	 * @param array is the ArrayList this program will be sorting 
+	 */
+	public void sortAr(ArrayList<String> array)
+	{
+		String temp,minL;
+		int min;
+		for(int i=array.size()-1;i>0;i--)
+		{
+			min = 0;
+			for(int j=1; j<=i; j++)
+			{
+				String dummy = array.get(j);
+				minL=array.get(j-1);
+				if(dummy.compareToIgnoreCase(minL)<0)
+					min=j; 
+				
+					
+			}
+			temp = array.get(min); 
+			array.set(min, array.get(i));
+			array.set(i, temp);
+		}
+	}
+	/**
+	 * @return a string with a message containing the numbers of words found or if no words were found 
+	 */
+	public String getArSize()
+	{
+		String message = "";
+		if(finalAllWords.size()<=0)
+			message = "No words found"; 
+		else if(finalAllWords.size()>0)
+			message = "Found "+finalAllWords.size()+" words";
+		else
+			return"";
+		return message; 
+	}
+	
+}
