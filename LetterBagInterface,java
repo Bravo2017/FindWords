@@ -1,0 +1,16 @@
+package FindWordsPackage;
+import java.util.*;
+/**
+ * @author Jefferson Vivanco NetID: JV1019 Date: 10-10-2015 
+ * Interface: This interface defines the requirements for a LetterBag class. It requires the class have the method getAllWords.
+ * Note: This interface was taken from the homework assignment. 
+ */
+public interface LetterBagInterface {
+
+	/**
+	 * This method determines the list of words that can be created from a given LetterBag object that are present in the provided Dictionary object dict. 
+	 * @param dict is the Dictionary object to be used 
+	 * @return a list of valid words in alphabetical order 
+	 */
+	ArrayList<String> getAllWords(Dictionary dict); 
+}
